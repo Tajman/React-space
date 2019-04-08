@@ -1,10 +1,23 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
+//import './style/index.css';
 import App from './App';
-import * as serviceWorker from './serviceWorker';
+import * as serviceWorker from './serviceWorker';   
+import {createStore, applyMiddleware} from 'redux';
+import {Provider} from 'react-redux';
+import thunk from 'redux-thunk';
+ 
+import rootReducer from './memeReduce';
+import {fetchMemes} from './memeAction'; 
 
-ReactDOM.render(<App />, document.getElementById('root'));
+const store = createStore(rootReducer, applyMiddleware(thunk)); 
+
+store.subscribe(() => console.log('store', store.getState()))
+store.dispatch(fetchMemes())
+
+ReactDOM.render(<Provider store={store}>
+                <App />
+                </Provider>, document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
