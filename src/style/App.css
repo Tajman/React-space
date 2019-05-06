@@ -33,14 +33,32 @@ body {
     background-color: darkblue;
     padding: 5%; 
     margin: 7%;
+} 
+
+#search-bar{
+    border-radius: 8px; 
+    color: black;
+}
+
+#space{
+    width: 6px; 
+    height: auto; 
+    display: inline-block;
+} 
+
+#gif{ 
+    display: inline-block; 
+    box-sizing: border-box;
+    
+    img{
+        width: 100%;
+    }
 }
 
 /////////////////////////////////////////////////////////////
 
 .meme-button {
-  cursor: pointer;
-  font-style: italic;
-  padding: 10px;
+  
 }
 
 .meme-item {

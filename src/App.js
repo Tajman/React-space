@@ -1,14 +1,16 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './style/App.css';  
 import {connect} from 'react-redux';
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';  
-import {Form, FormGroup, FormControl, Jumbotron} from 'react-bootstrap'; 
+import Container from 'react-bootstrap/Container';  
+import {Jumbotron, Button} from 'react-bootstrap'; 
 
 import MemeItem from './memeItem';
-import MyMemes from './memes';
+import MyMemes from './memes';  
+import Search from './search'; 
+import Giflist from './giflist'; 
+import request from 'superagent';
+export const API_GIPHY = 'WBxWrgJ3GP78HKFzD27Vu9FvNAwnfbnn';
+
 
 class App extends Component {
   constructor(){
@@ -16,41 +18,45 @@ class App extends Component {
 
     this.state = {
       memeLimit: 10,
-      text0: '',
-      text1: ''
+      disabledNext: false,
+      disabledPrev: false,   
+      gifs: []
     }
+  } 
+    
+    
+    getUrl(searchText) { 
+        const url = `https://api.giphy.com/v1/gifs/search?api_key=${API_GIPHY}&q=${searchText}&limit=10&offset=0&rating=PG-13&lang=en` 
+        
+        request.get(url, (err, res) => {
+            this.setState({gifs: res.body.data})
+        });
+    }
+
+    togglePrev(e) {
+    let memeLimit = this.state.memeLimit - 10;
+    let disabledPrev = (memeLimit === 0);
+
+    this.setState({ memeLimit: memeLimit, disabledPrev: disabledPrev, disabledNext: false })
   }
 
+   toggleNext(e) {
+     let memeLimit = this.state.memeLimit + 10;
+     let disabledNext = memeLimit === (this.props.memeLimit - 10);
 
-  render(){
+     this.setState({ memeLimit: memeLimit, disabledNext: disabledNext, disabledPrev: false })
+   }
+
+
+  render(){ 
+      const { disabledNext, disabledPrev } = this.state
     return(
       <div>
         <Jumbotron id='jumb'>
         <h2><u>Welcome to the Meme Generator</u></h2> 
         </Jumbotron> 
-        <Container id='cont-1'>
-        <MyMemes />
-        <h4><i>Write some text</i></h4>
-        <Form inline>
-          <FormGroup>
-            <Form.Label>Top</Form.Label>
-            <FormControl
-              type='text'
-              onChange={(event) => this.setState({text0: event.target.value})}
-            ></FormControl>
-          {' '}
-          </FormGroup>
-          <FormGroup>
-            <Form.Label>Bottom</Form.Label>
-            {' '}
-            <FormControl
-              type='text'
-              onChange={(event) => this.setState({text1: event.target.value})}
-              ></FormControl>
-          </FormGroup>
-        </Form>
-        {/*Here we are going to slice before we map because we want only the first 10,
-           we will than add a button allowing the user to load 10 more. We will use the state to make this happen  */}
+        <Container id='cont-1'> 
+        <h2>Imgflip meme list</h2>
         {
           this.props.memes.slice(0, this.state.memeLimit).map((meme, index) => {
             return (
@@ -63,12 +69,23 @@ class App extends Component {
             )
           })
         }
-        <div
-          onClick={() => this.setState({memeLimit: this.state.memeLimit + 10})}
-          className='meme-button'>
-          Load 10 more memes...
-        </div> 
-          </Container> 
+
+        <div>
+             <Prev toggle={(e) => this.togglePrev(e)} active={disabledPrev} /> 
+             <div id = 'space'/>
+             <Next toggle={(e) => this.toggleNext(e)} active={disabledNext} />
+           </div>
+             
+          </Container>  
+             
+          <Container id='cont-1'> 
+              <h2>Find a random gif</h2> 
+              
+             <Search onTermChange={searchText => this.getUrl(searchText)} /> 
+             <Giflist gifs={this.state.gifs}/>
+             
+          
+          </Container>
           
           <Container id='footer'> 
               <a href="https://github.com/Tajman/React-space">My github repository</a>
@@ -77,6 +94,18 @@ class App extends Component {
       </div>
     )
   }
+} 
+
+function Prev(props) {
+  return (
+    <Button variant="primary" onClick={props.toggle} disabled={props.active}>Previous</Button>
+  );
+}
+
+function Next(props) {
+  return (
+    <Button variant="primary" onClick={props.toggle} disabled={props.active}>Next</Button>
+  );
 }
 
 function mapStateToProps(state){

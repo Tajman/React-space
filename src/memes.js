@@ -10,7 +10,7 @@ class MyMemes extends Component{
             return (
               <img
                 key={index}
-                src={meme.data.url}
+                src={meme}
                 alt="my-meme"
                 className="my-meme-img"
               />

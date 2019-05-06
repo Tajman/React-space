@@ -2,9 +2,6 @@ import {username, password} from './cred'
 export const RECEIVE_MEMES = 'RECEIVE_MEMES';
 export const NEW_MEME = 'NEW_MEME';
 
-
-
-
 function reveiveMemes(json){
   const {memes} = json.data
   return {
@@ -41,13 +38,15 @@ function postMemeJson(params){
     return encodeURIComponent(key) + '=' + encodeURIComponent(params[key])
   }).join('&')
 
-  return fetch('https://api.imgflip.com/caption_image', {
-    method: 'POST',
+  const url = "https://api.imgflip.com/caption_image";
+  return fetch(url, {
+    method: 'POST', 
     headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
+      'Content-Type': 'application/json', 
     },
     body: bodyParams
-  }).then(response => response.json());
+  }).then(response => response.json()).then(response => console.log('Success:', JSON.stringify(response)))
+.catch(error => console.error('Error:', error));
 }
 
 export function createMeme(new_meme_object){
