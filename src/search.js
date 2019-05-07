@@ -11,15 +11,7 @@ class Search extends Component {
         this.setState({
             value: searchText
         });
-        if(searchText.length > 2) {
             this.props.onTermChange(searchText)
-        }
-    }
-
-    handleKeyUp(event) {
-        if (event.keyCode === 13) {
-            this.props.onTermChange(this.state.searchText)
-        }
     }
 
     render() {
@@ -27,10 +19,9 @@ class Search extends Component {
             <div>
                  <input type="text"
                      onChange ={this.handleChange.bind(this)}
-                     onKeyUp = {this.handleKeyUp.bind(this)}
                      placeholder="Search GIF"
                      value={this.state.value} 
-                     id = 'search-bar'
+                     id = 'search-bar'  
                   />
             </div>
         );
