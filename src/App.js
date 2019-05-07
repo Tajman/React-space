@@ -4,8 +4,7 @@ import {connect} from 'react-redux';
 import Container from 'react-bootstrap/Container';  
 import {Jumbotron, Button} from 'react-bootstrap'; 
 
-import MemeItem from './memeItem';
-import MyMemes from './memes';  
+import MemeItem from './memeItem';  
 import Search from './search'; 
 import Giflist from './giflist'; 
 import request from 'superagent';
